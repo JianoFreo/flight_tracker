@@ -49,9 +49,7 @@ database, and no API key required to run it.
 
 
 Each layer only talks to the one below it (screens → widgets → provider →
-service → model), so you can swap the data source, add caching, or add a
-new screen without touching unrelated files.
-
+service → model).
 
 
 ## Notes on the live data
