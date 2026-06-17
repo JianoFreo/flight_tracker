@@ -12,7 +12,7 @@ class AppTheme {
         colorScheme: ColorScheme.fromSeed(seedColor: _seed),
         scaffoldBackgroundColor: const Color(0xFFF5F7FA),
         appBarTheme: const AppBarTheme(centerTitle: false, elevation: 0),
-        cardTheme: CardThemeData(   // ✅ FIXED
+        cardTheme: CardThemeData(
           elevation: 0,
           margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -35,7 +35,7 @@ class AppTheme {
           brightness: Brightness.dark,
         ),
         appBarTheme: const AppBarTheme(centerTitle: false, elevation: 0),
-        cardTheme: CardThemeData(   // ✅ FIXED
+        cardTheme: CardThemeData(
           elevation: 0,
           margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

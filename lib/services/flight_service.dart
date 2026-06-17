@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import '../models/flight_state.dart';
 import '../utils/constants.dart';
@@ -7,15 +8,19 @@ import '../utils/constants.dart';
 ///
 /// This calls the public API directly from the device/browser — there is
 /// no backend server involved. Anonymous access is rate-limited (roughly
-/// one request every 10 seconds, ~400/day). For higher limits, create a
-/// free OpenSky account and pass [username]/[password]; they're sent as
-/// HTTP Basic Auth, never stored or transmitted anywhere else.
+/// one request every 10 seconds, ~400/day) and only returns the most
+/// recent state vectors.
+///
+/// Note: OpenSky has moved authenticated access to an OAuth2
+/// client-credentials flow and no longer accepts HTTP Basic Auth
+/// (username/password). This service intentionally only supports
+/// anonymous requests; if you need authenticated access for higher
+/// limits, implement the OAuth2 token exchange described at
+/// https://openskynetwork.github.io/opensky-api/rest.html and attach the
+/// resulting bearer token as an `Authorization` header below.
 class FlightService {
-  FlightService({this.username, this.password, http.Client? client})
-      : _client = client ?? http.Client();
+  FlightService({http.Client? client}) : _client = client ?? http.Client();
 
-  final String? username;
-  final String? password;
   final http.Client _client;
 
   /// Fetches all aircraft currently reporting a position within [bbox].
@@ -33,10 +38,7 @@ class FlightService {
             },
     );
 
-    final response = await _client
-        .get(uri, headers: _authHeaders())
-        .timeout(const Duration(seconds: 15));
-
+    final response = await _get(uri);
     _checkStatus(response);
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
@@ -55,10 +57,7 @@ class FlightService {
       queryParameters: {'icao24': icao24.toLowerCase().trim()},
     );
 
-    final response = await _client
-        .get(uri, headers: _authHeaders())
-        .timeout(const Duration(seconds: 15));
-
+    final response = await _get(uri);
     _checkStatus(response);
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
@@ -67,10 +66,27 @@ class FlightService {
     return FlightState.fromList(states.first as List<dynamic>);
   }
 
-  Map<String, String> _authHeaders() {
-    if (username == null || password == null) return {};
-    final credentials = base64Encode(utf8.encode('$username:$password'));
-    return {'Authorization': 'Basic $credentials'};
+  Future<http.Response> _get(Uri uri) async {
+    try {
+      return await _client.get(uri).timeout(const Duration(seconds: 15));
+    } on http.ClientException {
+      // On Flutter Web this is almost always a CORS rejection: the
+      // browser blocks the response because opensky-network.org does
+      // not reliably send Access-Control-Allow-Origin headers (this is a
+      // known, longstanding limitation of their API, not a bug in this
+      // app). Mobile/desktop builds aren't affected since CORS is a
+      // browser-only restriction.
+      if (kIsWeb) {
+        throw FlightServiceException(
+          "Couldn't reach OpenSky from the browser. Their API doesn't "
+          'reliably send CORS headers, so most browsers block the '
+          'response. Try running this app on Android, iOS, or desktop '
+          '(flutter run -d <device>) instead — that path calls the API '
+          'directly with no browser restrictions.',
+        );
+      }
+      rethrow;
+    }
   }
 
   void _checkStatus(http.Response response) {
