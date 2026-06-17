@@ -30,3 +30,44 @@
 </td>
 </tr>
 </table
+# Flight Tracker
+
+A real-time flight tracking app built with Flutter. It fetches **live aircraft
+data directly from the device/browser** — there is no backend server, no
+database, and no API key required to run it.
+
+## How it works
+
+- **Data source:** [OpenSky Network](https://opensky-network.org/) public
+  REST API (`/api/states/all`). It's free, requires no signup for light use,
+  and returns live aircraft position, altitude, speed, heading, and more.
+- **No backend:** the Flutter app calls the OpenSky API straight from
+  `FlightService` using the `http` package. There is nothing to host or
+  deploy server-side.
+- **Maps:** rendered with `flutter_map` using OpenStreetMap raster tiles,
+  which also require no API key.
+
+
+Each layer only talks to the one below it (screens → widgets → provider →
+service → model), so you can swap the data source, add caching, or add a
+new screen without touching unrelated files.
+
+
+
+## Notes on the live data
+
+- **Rate limits:** anonymous OpenSky access allows roughly one request
+  every 10 seconds and ~400 requests/day per IP. The app refreshes every
+  15 seconds by default (`AppConstants.defaultRefreshInterval`) and shows
+  a friendly message if you're rate-limited. For heavier use, create a
+  free account at opensky-network.org and pass credentials into
+  `FlightService(username: ..., password: ...)` in `main.dart` — this
+  raises the limit without adding any backend.
+- **Regions:** the app queries a bounding box (continent) rather than the
+  whole world by default, since "world" can return 10,000+ aircraft. Change
+  the default or add new regions in `lib/utils/constants.dart`.
+- **Web/CORS:** OpenSky's API generally allows cross-origin browser
+  requests, but if you ever see CORS errors on `flutter build web`, that's
+  a browser-side restriction from the API itself, not something fixable
+  from within this codebase without introducing a proxy. Mobile and
+  desktop builds are unaffected since CORS is a browser-only concept.
