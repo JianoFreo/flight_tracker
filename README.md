@@ -52,14 +52,4 @@ Each layer only talks to the one below it (screens → widgets → provider →
 service → model).
 
 
-## Notes on the live data
 
-
-- **Regions:** the app queries a bounding box (continent) rather than the
-  whole world by default, since "world" can return 10,000+ aircraft. Change
-  the default or add new regions in `lib/utils/constants.dart`.
-- **Web/CORS:** OpenSky's API generally allows cross-origin browser
-  requests, but if you ever see CORS errors on `flutter build web`, that's
-  a browser-side restriction from the API itself, not something fixable
-  from within this codebase without introducing a proxy. Mobile and
-  desktop builds are unaffected since CORS is a browser-only concept.
