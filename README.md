@@ -31,12 +31,12 @@ database, and no API key required to run it.
 <tr>
 <td align="center">
 
-<img width="320" height="707" alt="image" src="https://github.com/user-attachments/assets/e98d9fcc-c66c-479d-93a2-7cf8c3485c92" />
+<img width="361" height="772" alt="image" src="https://github.com/user-attachments/assets/8ae7142c-1fb3-427e-bf48-4daae55a02fa" />
 </td>
 
 <td align="center">
 
-<img width="326" height="701" alt="image" src="https://github.com/user-attachments/assets/329c7fd3-a818-4601-8d16-bfa4e34a11e8" />
+<img width="357" height="768" alt="image" src="https://github.com/user-attachments/assets/9fad0a00-1585-4d9c-8fc6-916b0414183f" />
 
 </td>
 </tr>
@@ -45,20 +45,29 @@ database, and no API key required to run it.
 <tr>
 <td align="center">
 
-<img width="356" height="772" alt="image" src="https://github.com/user-attachments/assets/1faa69dd-21fb-4a50-96c0-af63ae46f804" />
+<img width="363" height="767" alt="image" src="https://github.com/user-attachments/assets/649030fe-c0e6-499a-8072-aae3877fd108" />
 </td>
 
 <td align="center">
-<img width="352" height="768" alt="image" src="https://github.com/user-attachments/assets/07e88b42-19d1-4d41-be54-5f923f3fbfc5" />
+<img width="352" height="781" alt="image" src="https://github.com/user-attachments/assets/d23f8174-d9c1-4f52-9921-5b21da3117a3" />
 
 </td>
 </tr>
-</table
-# Flight Tracker
+</table>
+</table>
+<table>
+<tr>
+<td align="center">
 
-A real-time flight tracking app built with Flutter. It fetches **live aircraft
-data directly from the device/browser** — there is no backend server, no
-database, and no API key required to run it.
+<img width="361" height="766" alt="image" src="https://github.com/user-attachments/assets/8e989b34-e404-4067-b36a-db1a53a50502" />
+</td>
+
+<td align="center">
+<img width="356" height="770" alt="image" src="https://github.com/user-attachments/assets/b7e4ecfd-fa4e-4850-b9a3-97351f9d1168" />
+
+</td>
+</tr>
+</table>
 
 ## How it works
 
@@ -74,6 +83,10 @@ database, and no API key required to run it.
 
 Each layer only talks to the one below it (screens → widgets → provider →
 service → model).
+
+
+
+
 
 
 
