@@ -1,7 +1,31 @@
-# flight_tracker
+# Flight Tracker
 
+A real-time flight tracking app built with Flutter. It fetches **live aircraft
+data directly from the device/browser** — there is no backend server, no
+database, and no API key required to run it.
 
-### Flight Tracker Flutter app that shows live aircraft positions, altitude, speed, and heading on an interactive map and list, sourced directly from the OpenSky Network's public REST API. There's no backend server, database, or API key in the loop, the app calls OpenSky and renders OpenStreetMap tiles straight from the client, refreshing automatically every 15 seconds. The codebase is split into clear layers (models, services, providers, screens, widgets, utils) so the data source, state management, and UI can each be modified independently. Note: because it hits a third-party API with no backend proxy, web builds are subject to that API's CORS policy, mobile and desktop builds are unaffected.
+## Features
+
+- **Live tracking**: list and map views of currently airborne/grounded
+  aircraft, auto-refreshing on a configurable interval.
+- **Region picker**: scope queries to a continent (or the whole world).
+- **Search**: filter by callsign or origin country.
+- **Filter & sort**: ground/airborne filter, altitude range slider, and
+  sort by callsign, altitude, speed, country, or last contact.
+- **Nearby tab**: uses the device's GPS (on demand, with permission) to
+  sort tracked aircraft by distance from you.
+- **Favorites**: star any aircraft to track it on its own screen;
+  persisted locally so it survives app restarts.
+- **Statistics dashboard**: aircraft counts, average/highest altitude,
+  fastest ground speed, and a bar chart of top origin countries, all
+  computed client-side from data already fetched.
+- **Settings**: light/dark/system theme, imperial vs. metric units, and
+  refresh interval, all persisted locally.
+- **Offline fallback**: if a refresh fails, the app shows the last
+  successfully fetched data (clearly labeled as cached) instead of an
+  empty screen.
+- **Country flags**: best-effort flag emoji next to origin country.
+
 
 <table>
 <tr>

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as ll;
+import 'package:provider/provider.dart';
 import '../models/flight_state.dart';
+import '../providers/settings_provider.dart';
+import '../utils/country_flags.dart';
 import '../utils/formatters.dart';
+import '../widgets/favorite_button.dart';
 
 /// Full detail view for a single aircraft: a small live map plus every
-/// field returned by the OpenSky state vector.
+/// field returned by the OpenSky state vector, with a favorite toggle
+/// and unit-aware formatting.
 class FlightDetailScreen extends StatelessWidget {
   const FlightDetailScreen({super.key, required this.flight});
 
@@ -14,9 +19,14 @@ class FlightDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final point = flight.hasPosition ? ll.LatLng(flight.latitude!, flight.longitude!) : null;
+    final unit = context.watch<SettingsProvider>().unitSystem;
+    final flag = CountryFlags.flagFor(flight.originCountry);
 
     return Scaffold(
-      appBar: AppBar(title: Text(flight.displayName)),
+      appBar: AppBar(
+        title: Text(flight.displayName),
+        actions: [FavoriteButton(icao24: flight.icao24)],
+      ),
       body: ListView(
         children: [
           if (point != null)
@@ -55,13 +65,16 @@ class FlightDetailScreen extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const Divider(height: 32),
-                _DetailRow(label: 'Origin country', value: flight.originCountry),
-                _DetailRow(label: 'Altitude', value: Formatters.altitude(flight.baroAltitude)),
-                _DetailRow(label: 'Ground speed', value: Formatters.speed(flight.velocity)),
+                _DetailRow(
+                  label: 'Origin country',
+                  value: flag != null ? '$flag ${flight.originCountry}' : flight.originCountry,
+                ),
+                _DetailRow(label: 'Altitude', value: Formatters.altitude(flight.baroAltitude, unit)),
+                _DetailRow(label: 'Ground speed', value: Formatters.speed(flight.velocity, unit)),
                 _DetailRow(label: 'Heading', value: Formatters.heading(flight.trueTrack)),
                 _DetailRow(
                   label: 'Vertical rate',
-                  value: Formatters.verticalRate(flight.verticalRate),
+                  value: Formatters.verticalRate(flight.verticalRate, unit),
                 ),
                 _DetailRow(label: 'On ground', value: flight.onGround ? 'Yes' : 'No'),
                 _DetailRow(label: 'Squawk code', value: flight.squawk ?? '—'),
@@ -89,7 +102,13 @@ class _DetailRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.right,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
         ],
       ),
     );

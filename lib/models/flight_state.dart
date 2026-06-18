@@ -72,4 +72,46 @@ class FlightState {
   bool get hasPosition => latitude != null && longitude != null;
 
   String get displayName => callsign ?? icao24.toUpperCase();
+
+  /// Serializes to a plain JSON-able map. Used by `StorageService` to
+  /// cache the last successful fetch for offline/error fallback display —
+  /// this is a different shape than [fromList], which parses OpenSky's
+  /// raw positional array format.
+  Map<String, dynamic> toJson() => {
+        'icao24': icao24,
+        'callsign': callsign,
+        'originCountry': originCountry,
+        'timePosition': timePosition,
+        'lastContact': lastContact,
+        'longitude': longitude,
+        'latitude': latitude,
+        'baroAltitude': baroAltitude,
+        'onGround': onGround,
+        'velocity': velocity,
+        'trueTrack': trueTrack,
+        'verticalRate': verticalRate,
+        'geoAltitude': geoAltitude,
+        'squawk': squawk,
+        'spi': spi,
+        'positionSource': positionSource,
+      };
+
+  factory FlightState.fromJson(Map<String, dynamic> json) => FlightState(
+        icao24: json['icao24'] as String,
+        callsign: json['callsign'] as String?,
+        originCountry: json['originCountry'] as String? ?? 'Unknown',
+        timePosition: json['timePosition'] as int?,
+        lastContact: json['lastContact'] as int? ?? 0,
+        longitude: (json['longitude'] as num?)?.toDouble(),
+        latitude: (json['latitude'] as num?)?.toDouble(),
+        baroAltitude: (json['baroAltitude'] as num?)?.toDouble(),
+        onGround: json['onGround'] as bool? ?? false,
+        velocity: (json['velocity'] as num?)?.toDouble(),
+        trueTrack: (json['trueTrack'] as num?)?.toDouble(),
+        verticalRate: (json['verticalRate'] as num?)?.toDouble(),
+        geoAltitude: (json['geoAltitude'] as num?)?.toDouble(),
+        squawk: json['squawk'] as String?,
+        spi: json['spi'] as bool? ?? false,
+        positionSource: json['positionSource'] as int? ?? 0,
+      );
 }

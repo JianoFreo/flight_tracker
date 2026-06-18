@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
+import '../utils/formatters.dart';
 
 /// Thin strip below the search/region row that shows loading state,
-/// API errors, or the current aircraft count.
+/// API errors, stale/cached-data notices, or the current aircraft count.
 class StatusBanner extends StatelessWidget {
   const StatusBanner({
     super.key,
     required this.isLoading,
     required this.errorMessage,
     required this.count,
+    this.isShowingCachedData = false,
+    this.cachedAt,
   });
 
   final bool isLoading;
   final String? errorMessage;
   final int count;
+  final bool isShowingCachedData;
+  final DateTime? cachedAt;
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +32,25 @@ class StatusBanner extends StatelessWidget {
           color: colorScheme.errorContainer,
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.error_outline, color: colorScheme.onErrorContainer, size: 18),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(errorMessage!, style: TextStyle(color: colorScheme.onErrorContainer)),
+            Row(
+              children: [
+                Icon(Icons.error_outline, color: colorScheme.onErrorContainer, size: 18),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(errorMessage!, style: TextStyle(color: colorScheme.onErrorContainer)),
+                ),
+              ],
             ),
+            if (isShowingCachedData && cachedAt != null) ...[
+              const SizedBox(height: 6),
+              Text(
+                'Showing cached data from ${Formatters.lastSeen(cachedAt!.millisecondsSinceEpoch ~/ 1000)}.',
+                style: TextStyle(color: colorScheme.onErrorContainer, fontSize: 12),
+              ),
+            ],
           ],
         ),
       );
